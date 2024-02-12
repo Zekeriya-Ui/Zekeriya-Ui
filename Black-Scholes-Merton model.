@@ -1,0 +1,72 @@
+``R
+
+# Load required libraries
+
+library(ggplot2)
+
+
+
+# Parameters
+
+S0 <- 100  # Initial stock price
+
+mu <- 0.05 # Drift
+
+sigma <- 0.2 # Volatility
+
+dt <- 1/252 # Time step (daily)
+
+T <- 1 # Time horizon (1 year)
+
+N <- T/dt # Number of time steps
+
+n_paths <- 5 # Number of simulated paths
+
+
+
+# Function to simulate geometric Brownian motion
+
+simulate_gbm <- function(S0, mu, sigma, dt, N, n_paths) {
+
+  paths <- matrix(NA, nrow = N + 1, ncol = n_paths)
+
+  paths[1,] <- S0
+
+  for (i in 1:n_paths) {
+
+    for (j in 2:(N + 1)) {
+
+      paths[j, i] <- paths[j - 1, i] * exp((mu - 0.5 * sigma^2) * dt +
+
+                                           sigma * sqrt(dt) * rnorm(1))
+
+    }
+
+  }
+
+  return(paths)
+
+}
+
+
+
+# Simulate GBM paths
+
+paths <- simulate_gbm(S0, mu, sigma, dt, N, n_paths)
+
+
+
+# Plot simulated paths
+
+ggplot() +
+
+  geom_line(aes(x = 0:N * dt, y = paths), color = "blue") +
+
+  labs(title = "Simulated Geometric Brownian Motion Paths",
+
+       x = "Time",
+
+       y = "Stock Price")
+
+```
+
